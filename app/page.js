@@ -1,102 +1,152 @@
+'use client'
+
 import Image from "next/image";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { TextPlugin } from "gsap/TextPlugin";
+import { useEffect } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(TextPlugin);
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    // Animate header on load
+    gsap.fromTo("header",
+      { y: -100, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, ease: "power2.out" }
+    );
+
+    // Stagger navigation items
+    gsap.fromTo("header div div",
+      { y: -10, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.4, stagger: 0.1, delay: 0.5 }
+    );
+
+    // Create a new timeline for the reveal sequence
+    const revealTimeline = gsap.timeline({
+      delay: 1 // Start this whole sequence after a 1-second delay
+    });
+
+    revealTimeline
+      // 1. Fade out the initial placeholder text
+      .to(".placeholder-text", { // Changed selector to be more specific
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.out"
+      })
+      // 2. Animate the VALORANT Logo in
+      .fromTo(".valorant-logo",
+        { opacity: 0, x: 20 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 1.5,
+          ease: "power2.out",
+        },
+        // Start this animation 0.3 seconds after the timeline begins
+        0.3
+      )
+      // 3. Animate the TRACKER text in
+      .fromTo(".tracker",
+        { opacity: 0, x: -20, text: "" }, // start with empty text
+        {
+          opacity: 1,
+          x: 0,
+          duration: 1.5,
+          ease: "power2.out",
+          text: "TRACKER", // final text
+        },
+        1.5
+      );
+  }, []);
+
+  useEffect(() => {
+    gsap.to("header", {
+      backgroundColor: "#111111",
+      scrollTrigger: {
+        trigger: "body",
+        start: "top top",
+        end: "300px top",
+        scrub: true
+      }
+    })
+
+    gsap.to(".hero-image-container", {
+      yPercent: -10,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".hero-section",
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+      },
+    });
+  }, []);
+
+  return (
+    <div className="flex flex-col relative bg-[#ece8e1] min-h-screen overflow-x-hidden">
+      <header className="fixed w-full top-0 font-[impact] flex items-center justify-between px-4 sm:px-8 py-4 mx-auto h-20 z-10 cursor-default">
+        <span className="flex-1 flex">
+          <span className="p-1 text-[#ff4655] text-3xl sm:text-5xl">VT</span>
+        </span>
+        <button className="sm:hidden text-[#ece8e1] p-2">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <div className="hidden sm:flex flex-row gap-8 items-center">
+          <div className="text-[#ece8e1] text-lg hover:text-[#ff4655] transition-colors">Home</div>
+          <div className="text-[#ece8e1] text-lg hover:text-[#ff4655] transition-colors">Leaderboards</div>
+          <div className="text-[#ece8e1] text-lg hover:text-[#ff4655] transition-colors">Lineups</div>
+          <div className="text-[#ece8e1] text-lg hover:text-[#ff4655] transition-colors">Premier</div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+      </header>
+
+      <section className="flex h-screen bg-[#0f1923] relative hero-section">
+        <div className="flex h-full w-full relative hero-image-container">
           <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+            src="/Beta Key Art_VALORANT.jpg"
+            fill={true}
+            priority
+            quality={100}
+            className="object-cover"
+            alt="Valorant Key Art"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0f1923]"></div>
+        </div>
+
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+
+          <div className="placeholder-text absolute text-5xl sm:text-8xl text-white font-bold">
+            VALORANT
+          </div>
+
+          <div className="relative flex flex-col items-center w-full max-w-xs sm:max-w-2xl">
+            <div className="valorant-logo opacity-0">
+              <Image
+                src="/V_Logotype_White.png"
+                alt="VALORANT Logo"
+                width={600}
+                height={120}
+                className="object-contain"
+              />
+            </div>
+
+            <div className="tracker absolute top-[65%] sm:top-[60%] text-4xl sm:text-8xl text-white">
+              TRACKER
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="flex flex-col items-center justify-center min-h-screen bg-[#ece8e1] p-8 text-center">
+        <h2 className="text-4xl font-bold text-[#0f1923] mb-4">Content Starts Here</h2>
+      </section>
+
+      <footer className="flex bg-[#ff4655] min-h-[200px] w-full items-center justify-center">
+        <div className="text-[#ece8e1] text-2xl font-bold">FOOTER</div>
       </footer>
     </div>
   );
