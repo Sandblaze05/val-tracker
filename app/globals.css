@@ -158,12 +158,3 @@ body {
   text-fill-color: transparent;
   background-size: 400% 100%;
 }
-
-@keyframes streakShine {
-  0% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: -100% 50%;
-  }
-}

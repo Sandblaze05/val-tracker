@@ -4,13 +4,67 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextPlugin } from "gsap/TextPlugin";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import NewsCard from "@/components/home/NewsCard";
+import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 gsap.registerPlugin(TextPlugin);
 
 export default function Home() {
+  const scrollRef = useRef(null);
+  const [progress, setProgress] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollStartPosition, setScrollStartPosition] = useState(0);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = el;
+      const pct = (scrollLeft / (scrollWidth - clientWidth)) * 100;
+      setProgress(pct);
+    }
+
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollByAmount = (amount) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
+    }
+  }
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollStartPosition(scrollRef.current.scrollLeft);
+    e.preventDefault();
+    // document.body.style.userSelect = 'none';
+  }
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    scrollRef.current.scrollLeft = scrollStartPosition - walk;
+  }
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    // document.body.style.userSelect = '';
+  }
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      // document.body.style.userSelect = '';
+    }
+  }
 
   useEffect(() => {
     // Animate header on load
@@ -25,46 +79,64 @@ export default function Home() {
       { y: 0, opacity: 1, duration: 1, stagger: 0.2, filter: 'none', ease: "power2.out" }
     );
 
-    // Create a new timeline for the reveal sequence
     const revealTimeline = gsap.timeline({
       delay: 1,
-      onComplete: () => {
-        gsap.to(".tracker", {
-          className: "tracker gradient-text absolute top-[65%] sm:top-[60%] text-7xl sm:text-8xl text-[#ece8e1] transition-all",
-          duration: 0.1,
-          ease: "power2.in"
-        });
-        gsap.to(".tracker", {
-          backgroundPositionX: "130%",
-          backgroundPositionY: "100%",
-          ease: "power4.out",
-          duration: 4,
-        });
-      }
+
     });
 
     revealTimeline
       // 1. Animate the VALORANT Logo in
       .fromTo(".valorant-logo",
         { opacity: 0, x: 20 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 1.5,
-          ease: "power2.out",
-        },
+        { opacity: 1, x: 0, duration: 1.5, ease: "power2.out" }
       )
       // 2. Animate the TRACKER text in
       .fromTo(".tracker",
         { opacity: 0, x: -50 },
+        { opacity: 1, x: 0, duration: 1.5, ease: "power2.out" },
+        "<0.5"
+      )
+      // 3. Reveal CTA button border with blink
+      .fromTo(".cta-button",
+        { opacity: 0 },
         {
           opacity: 1,
-          x: 0,
-          duration: 1.5,
-          ease: "power2.out",
+          duration: 0.05,
+          ease: "none",
+          repeat: 3,
+          yoyo: true,
+          onComplete: () => {
+            gsap.to(".cta-button", { opacity: 1, duration: 0.1 });
+          }
         },
-        "<0.5"
-      );
+        '<'
+      )
+      // 4. Reveal CTA button background with blink
+      .fromTo(".cta-button-bg",
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 0.05,
+          ease: "none",
+          repeat: 3,
+          yoyo: true,
+          onComplete: () => {
+            gsap.to(".cta-button-bg", { opacity: 1, duration: 0.1 });
+          }
+        },
+        '<'
+      )
+      .to(".tracker", {
+        className: "tracker gradient-text absolute top-[65%] sm:top-[60%] text-7xl sm:text-8xl text-[#ece8e1] transition-all",
+        duration: 0.1,
+        ease: "power2.in"
+      }, '<-1')
+      .to(".tracker", {
+        backgroundPositionX: "130%",
+        backgroundPositionY: "100%",
+        ease: "power4.out",
+        duration: 4,
+      });
   }, []);
 
   useEffect(() => {
@@ -101,14 +173,14 @@ export default function Home() {
       content: 'Sage mains rejoice, new map rotation, and some more.'
     },
     {
-      image: '/Beta Key Art_VALORANT.jpg',
+      image: '/VALORANT_PHX.jpg',
       type: 'GAME UPDATES',
       date: '19/08/2025',
       title: 'VALORANT Patch Notes 11.04',
       content: 'Sage mains rejoice, new map rotation, and some more.'
     },
     {
-      image: '/Beta Key Art_VALORANT.jpg',
+      image: '/VALORANT_LOGO_V.jpg',
       type: 'GAME UPDATES',
       date: '19/08/2025',
       title: 'VALORANT Patch Notes 11.04',
@@ -173,10 +245,10 @@ export default function Home() {
         {/* CTA */}
         <div
           onClick={() => console.log("a")}
-          className="z-9 min-w-40 min-h-10 sm:min-w-50 sm:min-h-15 flex items-center justify-center cursor-pointer
-          text-white absolute top-[80%] sm:top-[75%] left-1/2 -translate-x-1/2 border-1 px-1 font-extrabold font-stretch-200%"
+          className="cta-button opacity-0 z-9 min-w-40 min-h-10 sm:min-w-50 sm:min-h-15 flex items-center justify-center cursor-pointer
+        text-white absolute top-[80%] sm:top-[75%] left-1/2 -translate-x-1/2 border-1 px-1 font-extrabold font-stretch-200%"
         >
-          <div className="flex justify-center items-center bg-[#ece8e1] hover:bg-[#ece8e1be] text-black w-full h-8 sm:h-13">
+          <div className="cta-button-bg opacity-0 flex justify-center items-center transition-colors bg-[#ff4655] hover:bg-[#ece8e1] hover:text-[#111111] text-[#ece8e1] w-full h-8 sm:h-13">
             <span className="text-xl">Ready</span>
           </div>
         </div>
@@ -202,25 +274,44 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex relative flex-col min-h-screen items-start bg-[#ece8e1] p-8 text-center">
+      <section className="flex relative flex-col h-fit max-h-screen items-start bg-[#ece8e1] p-8">
         <div className="flex flex-col items-start gap-5 w-full">
           <span className="text-5xl font-extrabold tracking-tighter">News</span>
-          <div className="news-container scroll-smooth flex flex-row justify-evenly gap-5 max-w-full overflow-x-auto whitespace-nowrap w-full pr-4">
-              {news.map((i, _) => (
-                <NewsCard
-                  key={_}
-                  className="flex-shrink-0"
-                  image={i.image}
-                  type={i.type}
-                  date={i.date}
-                  title={i.title}
-                  content={i.content}
-                />
-              ))}
+          <div
+            className={`news-container scroll-smooth flex flex-row justify-evenly gap-5 max-w-full overflow-x-auto whitespace-nowrap w-full pr-4 cursor-grab`}
+            style={{ scrollBehavior: "smooth", msOverflowStyle: "none", scrollbarWidth: "none" }}
+            ref={scrollRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseLeave}
+          >
+            {news.map((i, _) => (
+              <NewsCard
+                key={_}
+                className="flex-shrink-0"
+                image={i.image}
+                type={i.type}
+                date={i.date}
+                title={i.title}
+                content={i.content}
+              />
+            ))}
           </div>
-
+          <div className="w-full flex items-center gap-10 mx-2">
+            <div className="flex flex-8 h-[2px] w-full bg-gray-400">
+              <div className="h-full transition-all bg-red-500 transform duration-100 ease-linear" style={{ width: `${progress}%` }}></div>
+            </div>
+            <div className="hidden sm:flex flex-1 gap-2 justify-around w-full">
+              <ArrowBigLeft className="fill-accent-foreground" onClick={() => scrollByAmount(-200)} />
+              <ArrowBigRight className="fill-accent-foreground" onClick={() => scrollByAmount(200)} />
+            </div>
+          </div>
         </div>
       </section>
+
+      <section className="flex relative flex-col min-h-screen items-start bg-[#0f1923] p-8"></section>
+      <section className="flex relative flex-col min-h-screen items-start bg-[#ece8e1] p-8"></section>
 
       <footer className="bg-black py-8 border-t border-gray-800 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black via-gray-900 to-black"></div>
