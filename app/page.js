@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextPlugin } from "gsap/TextPlugin";
 import { useEffect } from "react";
+import NewsCard from "@/components/home/NewsCard";
 
 gsap.registerPlugin(ScrollTrigger);
 gsap.registerPlugin(TextPlugin);
@@ -20,8 +21,8 @@ export default function Home() {
 
     // Stagger navigation items
     gsap.fromTo("header div div",
-      { y: -10, opacity: 0.5, filter: 'blur(2px)' },
-      { y: 0, opacity: 1, duration: 0.4, stagger: 0.1, delay: 0.5, filter: 'none' }
+      { y: -20, opacity: 0.5, filter: 'blur(1px)' },
+      { y: 0, opacity: 1, duration: 1, stagger: 0.2, filter: 'none', ease: "power2.out" }
     );
 
     // Create a new timeline for the reveal sequence
@@ -29,16 +30,16 @@ export default function Home() {
       delay: 1,
       onComplete: () => {
         gsap.to(".tracker", {
-          className: "tracker gradient-text absolute top-[65%] sm:top-[60%] text-4xl sm:text-8xl",
-          duration: 0.5,
-          ease: "power2.inOut"
+          className: "tracker gradient-text absolute top-[65%] sm:top-[60%] text-7xl sm:text-8xl text-[#ece8e1] transition-all",
+          duration: 0.1,
+          ease: "power2.in"
         });
         gsap.to(".tracker", {
-          backgroundPositionX: "-200%",
-          // backgroundPositionY: "50%",
-          ease: "power2.inOut",
-          duration: 2,
-        })
+          backgroundPositionX: "130%",
+          backgroundPositionY: "100%",
+          ease: "power4.out",
+          duration: 4,
+        });
       }
     });
 
@@ -67,6 +68,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    // increase opacity of header on scroll
     gsap.to("header", {
       backgroundColor: "#111111",
       scrollTrigger: {
@@ -77,6 +79,7 @@ export default function Home() {
       }
     })
 
+    // parallax on hero scroll
     gsap.to(".hero-image-container", {
       yPercent: -10,
       ease: "none",
@@ -89,11 +92,56 @@ export default function Home() {
     });
   }, []);
 
+  const news = [
+    {
+      image: '/Beta Key Art_VALORANT.jpg',
+      type: 'GAME UPDATES',
+      date: '19/08/2025',
+      title: 'VALORANT Patch Notes 11.04',
+      content: 'Sage mains rejoice, new map rotation, and some more.'
+    },
+    {
+      image: '/Beta Key Art_VALORANT.jpg',
+      type: 'GAME UPDATES',
+      date: '19/08/2025',
+      title: 'VALORANT Patch Notes 11.04',
+      content: 'Sage mains rejoice, new map rotation, and some more.'
+    },
+    {
+      image: '/Beta Key Art_VALORANT.jpg',
+      type: 'GAME UPDATES',
+      date: '19/08/2025',
+      title: 'VALORANT Patch Notes 11.04',
+      content: 'Sage mains rejoice, new map rotation, and some more.'
+    },
+    {
+      image: '/Beta Key Art_VALORANT.jpg',
+      type: 'GAME UPDATES',
+      date: '19/08/2025',
+      title: 'VALORANT Patch Notes 11.04',
+      content: 'Sage mains rejoice, new map rotation, and some more.'
+    },
+    {
+      image: '/Beta Key Art_VALORANT.jpg',
+      type: 'GAME UPDATES',
+      date: '19/08/2025',
+      title: 'VALORANT Patch Notes 11.04',
+      content: 'Sage mains rejoice, new map rotation, and some more.'
+    },
+    {
+      image: '/Beta Key Art_VALORANT.jpg',
+      type: 'GAME UPDATES',
+      date: '19/08/2025',
+      title: 'VALORANT Patch Notes 11.04',
+      content: 'Sage mains rejoice, new map rotation, and some more.'
+    },
+  ];
+
   return (
-    <div className="flex flex-col relative bg-[#ece8e1] min-h-screen overflow-x-hidden">
-      <header className="fixed w-full top-0 flex font-extrabold font-stretch-50% leading-0 items-center justify-between px-4 sm:px-8 py-4 mx-auto h-20 z-10 cursor-default">
+    <div className="flex flex-col relative bg-[#ece8e1] min-h-screen overflow-x-hidden z-0">
+      <header className="fixed tracking-tighter w-full top-0 flex font-extrabold font-stretch-50% leading-0 items-center justify-between px-4 sm:px-8 py-4 mx-auto h-20 z-10 cursor-default">
         <span className="flex-1 flex">
-          <span className="p-1 text-[#ff4655] text-3xl sm:text-5xl">VT</span>
+          <span className="p-1 text-transparent bg-clip-text bg-linear-[135deg] from-67% to-10% from-[#ff4655] to-[#ece8e1] text-3xl sm:text-5xl">VT</span>
         </span>
         <button className="sm:hidden text-[#ece8e1] p-2">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -101,10 +149,10 @@ export default function Home() {
           </svg>
         </button>
         <div className="hidden sm:flex flex-row gap-8 items-center">
-          <div className="text-[#ece8e1] text-lg hover:text-[#ff4655] transition-colors">Home</div>
-          <div className="text-[#ece8e1] text-lg hover:text-[#ff4655] transition-colors">Leaderboards</div>
-          <div className="text-[#ece8e1] text-lg hover:text-[#ff4655] transition-colors">Lineups</div>
-          <div className="text-[#ece8e1] text-lg hover:text-[#ff4655] transition-colors">Premier</div>
+          <div className="text-[#ece8e1] text-lg hover:text-[#ff4655] transform duration-300 hover:scale-105 transition-colors">Home</div>
+          <div className="text-[#ece8e1] text-lg hover:text-[#ff4655] transform duration-300 hover:scale-105 transition-colors">Leaderboards</div>
+          <div className="text-[#ece8e1] text-lg hover:text-[#ff4655] transform duration-300 hover:scale-105 transition-colors">Lineups</div>
+          <div className="text-[#ece8e1] text-lg hover:text-[#ff4655] transform duration-300 hover:scale-105 transition-colors">Premier</div>
         </div>
       </header>
 
@@ -118,7 +166,19 @@ export default function Home() {
             className="object-cover"
             alt="Valorant Key Art"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0f1923]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0f1923] z-2"></div>
+
+        </div>
+
+        {/* CTA */}
+        <div
+          onClick={() => console.log("a")}
+          className="z-9 min-w-40 min-h-10 sm:min-w-50 sm:min-h-15 flex items-center justify-center cursor-pointer
+          text-white absolute top-[80%] sm:top-[75%] left-1/2 -translate-x-1/2 border-1 px-1 font-extrabold font-stretch-200%"
+        >
+          <div className="flex justify-center items-center bg-[#ece8e1] hover:bg-[#ece8e1be] text-black w-full h-8 sm:h-13">
+            <span className="text-xl">Ready</span>
+          </div>
         </div>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
@@ -134,7 +194,7 @@ export default function Home() {
               />
             </div>
 
-            <div className="tracker gradient-text absolute top-[65%] sm:top-[60%] text-4xl sm:text-8xl text-[#ece8e1] transition-all opacity-0">
+            <div style={{ backgroundPositionX: "-150%" }} className="tracker gradient-text absolute top-[65%] sm:top-[60%] text-7xl sm:text-8xl text-[#ece8e1] transition-all opacity-0">
               TRACKER
             </div>
 
@@ -142,8 +202,24 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col items-center justify-center min-h-screen bg-[#ece8e1] p-8 text-center">
-        <h2 className="text-4xl font-bold text-[#0f1923] mb-4">Content Starts Here</h2>
+      <section className="flex relative flex-col min-h-screen items-start bg-[#ece8e1] p-8 text-center">
+        <div className="flex flex-col items-start gap-5 w-full">
+          <span className="text-5xl font-extrabold tracking-tighter">News</span>
+          <div className="news-container scroll-smooth flex flex-row justify-evenly gap-5 max-w-full overflow-x-auto whitespace-nowrap w-full pr-4">
+              {news.map((i, _) => (
+                <NewsCard
+                  key={_}
+                  className="flex-shrink-0"
+                  image={i.image}
+                  type={i.type}
+                  date={i.date}
+                  title={i.title}
+                  content={i.content}
+                />
+              ))}
+          </div>
+
+        </div>
       </section>
 
       <footer className="bg-black py-8 border-t border-gray-800 relative overflow-hidden">
