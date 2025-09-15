@@ -141,3 +141,29 @@ body {
     text-shadow: 1px 1px #ff4655, -1px -1px #0099ff;
   }
 }
+
+.gradient-text {
+  background-image: repeating-linear-gradient(
+    135deg,
+    #ece8e1 0%,
+    #ece8e1 20%,
+    #ff4655 20%,
+    #ff4655 30%,
+    #111111 30%,
+    #111111 40%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+  background-size: 400% 100%;
+}
+
+@keyframes streakShine {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: -100% 50%;
+  }
+}

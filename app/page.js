@@ -14,29 +14,36 @@ export default function Home() {
   useEffect(() => {
     // Animate header on load
     gsap.fromTo("header",
-      { y: -100, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: "power2.out" }
+      { y: -100, opacity: 0, color: '#111111' },
+      { y: 0, opacity: 1, duration: 1, ease: "power2.out", color: '#ff4655' }
     );
 
     // Stagger navigation items
     gsap.fromTo("header div div",
-      { y: -10, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.4, stagger: 0.1, delay: 0.5 }
+      { y: -10, opacity: 0.5, filter: 'blur(2px)' },
+      { y: 0, opacity: 1, duration: 0.4, stagger: 0.1, delay: 0.5, filter: 'none' }
     );
 
     // Create a new timeline for the reveal sequence
     const revealTimeline = gsap.timeline({
-      delay: 1 // Start this whole sequence after a 1-second delay
+      delay: 1,
+      onComplete: () => {
+        gsap.to(".tracker", {
+          className: "tracker gradient-text absolute top-[65%] sm:top-[60%] text-4xl sm:text-8xl",
+          duration: 0.5,
+          ease: "power2.inOut"
+        });
+        gsap.to(".tracker", {
+          backgroundPositionX: "-200%",
+          // backgroundPositionY: "50%",
+          ease: "power2.inOut",
+          duration: 2,
+        })
+      }
     });
 
     revealTimeline
-      // 1. Fade out the initial placeholder text
-      .to(".placeholder-text", { // Changed selector to be more specific
-        opacity: 0,
-        duration: 0.3,
-        ease: "power2.out"
-      })
-      // 2. Animate the VALORANT Logo in
+      // 1. Animate the VALORANT Logo in
       .fromTo(".valorant-logo",
         { opacity: 0, x: 20 },
         {
@@ -45,20 +52,17 @@ export default function Home() {
           duration: 1.5,
           ease: "power2.out",
         },
-        // Start this animation 0.3 seconds after the timeline begins
-        0.3
       )
-      // 3. Animate the TRACKER text in
+      // 2. Animate the TRACKER text in
       .fromTo(".tracker",
-        { opacity: 0, x: -20, text: "" }, // start with empty text
+        { opacity: 0, x: -50 },
         {
           opacity: 1,
           x: 0,
           duration: 1.5,
           ease: "power2.out",
-          text: "TRACKER", // final text
         },
-        1.5
+        "<0.5"
       );
   }, []);
 
@@ -87,7 +91,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col relative bg-[#ece8e1] min-h-screen overflow-x-hidden">
-      <header className="fixed w-full top-0 font-[impact] flex items-center justify-between px-4 sm:px-8 py-4 mx-auto h-20 z-10 cursor-default">
+      <header className="fixed w-full top-0 flex font-extrabold font-stretch-50% leading-0 items-center justify-between px-4 sm:px-8 py-4 mx-auto h-20 z-10 cursor-default">
         <span className="flex-1 flex">
           <span className="p-1 text-[#ff4655] text-3xl sm:text-5xl">VT</span>
         </span>
@@ -119,10 +123,6 @@ export default function Home() {
 
         <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
 
-          <div className="placeholder-text absolute text-5xl sm:text-8xl text-white font-bold">
-            VALORANT
-          </div>
-
           <div className="relative flex flex-col items-center w-full max-w-xs sm:max-w-2xl">
             <div className="valorant-logo opacity-0">
               <Image
@@ -134,9 +134,10 @@ export default function Home() {
               />
             </div>
 
-            <div className="tracker absolute top-[65%] sm:top-[60%] text-4xl sm:text-8xl text-white">
+            <div className="tracker gradient-text absolute top-[65%] sm:top-[60%] text-4xl sm:text-8xl text-[#ece8e1] transition-all opacity-0">
               TRACKER
             </div>
+
           </div>
         </div>
       </section>
