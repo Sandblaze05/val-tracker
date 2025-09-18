@@ -230,14 +230,16 @@ export default function Home() {
 
       <section className="flex h-screen bg-[#0f1923] relative hero-section">
         <div className="flex h-full w-full relative hero-image-container">
-          <Image
-            src="/Beta Key Art_VALORANT.jpg"
-            fill={true}
-            priority
-            quality={100}
-            className="object-cover"
-            alt="Valorant Key Art"
-          />
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="/hero.mp4" type="video/mp4" />
+          </video>
+
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0f1923] z-2"></div>
 
         </div>
