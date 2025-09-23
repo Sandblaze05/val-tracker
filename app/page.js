@@ -5,8 +5,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextPlugin } from "gsap/TextPlugin";
 import { useEffect, useRef, useState } from "react";
-import NewsCard from "@/components/home/NewsCard";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
+import News from "@/components/News";
 
 gsap.registerPlugin(ScrollTrigger);
 gsap.registerPlugin(TextPlugin);
@@ -211,7 +211,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col relative bg-[#ece8e1] min-h-screen overflow-x-hidden z-0">
-      <header className="fixed tracking-tighter w-full top-0 flex font-extrabold font-stretch-50% leading-0 items-center justify-between px-4 sm:px-8 py-4 mx-auto h-20 z-10 cursor-default">
+      <header className="fixed tracking-tighter w-full top-0 flex font-extrabold font-stretch-50% leading-0 items-center justify-between px-4 sm:px-8 py-4 mx-auto h-20 z-[9999] cursor-default">
         <span className="flex-1 flex">
           <span className="p-1 text-transparent bg-clip-text bg-linear-[135deg] from-67% to-10% from-[#ff4655] to-[#ece8e1] text-3xl sm:text-5xl">VT</span>
         </span>
@@ -276,41 +276,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex relative flex-col h-fit max-h-screen items-start bg-[#ece8e1] p-8">
-        <div className="flex flex-col items-start gap-5 w-full">
-          <span className="text-5xl font-extrabold tracking-tighter">News</span>
-          <div
-            className={`news-container scroll-smooth flex flex-row justify-evenly gap-5 max-w-full overflow-x-auto whitespace-nowrap w-full pr-4 cursor-grab`}
-            style={{ scrollBehavior: "smooth", msOverflowStyle: "none", scrollbarWidth: "none" }}
-            ref={scrollRef}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseLeave}
-          >
-            {news.map((i, _) => (
-              <NewsCard
-                key={_}
-                className="flex-shrink-0"
-                image={i.image}
-                type={i.type}
-                date={i.date}
-                title={i.title}
-                content={i.content}
-              />
-            ))}
-          </div>
-          <div className="w-full flex items-center gap-10 mx-2">
-            <div className="flex flex-8 h-[2px] w-full bg-gray-400">
-              <div className="h-full transition-all bg-red-500 transform duration-100 ease-linear" style={{ width: `${progress}%` }}></div>
-            </div>
-            <div className="hidden sm:flex flex-1 gap-2 justify-around w-full">
-              <ArrowBigLeft className="fill-accent-foreground" onClick={() => scrollByAmount(-200)} />
-              <ArrowBigRight className="fill-accent-foreground" onClick={() => scrollByAmount(200)} />
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* News Section */}
+      <News />
 
       <section className="flex relative flex-col min-h-screen items-start bg-[#0f1923] p-8"></section>
       <section className="flex relative flex-col min-h-screen items-start bg-[#ece8e1] p-8"></section>
