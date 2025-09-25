@@ -201,3 +201,18 @@ body {
     text-shadow: 1px 1px #ff4655, -1px -1px #0099ff;
   }
 }
+
+.smooth-wrapper {
+  overflow: hidden;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.smooth-content {
+  min-height: 100vh;
+}
