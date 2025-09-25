@@ -91,7 +91,7 @@ const GoToNews = () => (
     className="group cursor-pointer flex items-center flex-row "
   >
     <p className="font-dinw05-bold uppercase text-red text-base mr-4 -tracking-wide font-bold" style={{fontFamily: 'DinW05Bold, Arial Black, sans-serif'}}>
-      GO TO NEWS PAGE
+      <span className="hidden md:inline">{"GO TO"}</span> {"NEWS"} <span className="hidden md:inline">{"PAGE"}</span>
     </p>
     <span className="group-hover:translate-x-2.5 ease-out duration-300 w-6 h-6">
       {/* Animated Arrow */}
@@ -266,16 +266,16 @@ const News = () => {
           >
             <SectionHeadMotion>LATEST NEWS</SectionHeadMotion>
           </h2>
-          <div className="hidden lg:flex">
+          <div className="flex">
             <GoToNews />
           </div>
         </div>
 
         <Slider />
 
-        <div className="block lg:hidden">
+        {/* <div className="block lg:hidden">
           <GoToNews />
-        </div>
+        </div> */}
       </div>
     </Section>
   );

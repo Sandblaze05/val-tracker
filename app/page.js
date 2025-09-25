@@ -81,21 +81,31 @@ export default function Home() {
 
     const revealTimeline = gsap.timeline({
       delay: 1,
-
     });
 
     revealTimeline
       // 1. Animate the VALORANT Logo in
       .fromTo(".valorant-logo",
         { opacity: 0, x: 20 },
-        { opacity: 1, x: 0, duration: 1.5, ease: "power2.out" }
+        { opacity: 1, x: 0, duration: 1.5, ease: "power1.out" }
       )
       // 2. Animate the TRACKER text in
-      .fromTo(".tracker",
-        { opacity: 0, x: -50 },
-        { opacity: 1, x: 0, duration: 1.5, ease: "power2.out" },
-        "<0.5"
-      )
+      .set(".tracker-curtain", { opacity: 1 })
+      .fromTo(".tracker-curtain", {
+        scaleX: "0%",
+        transformOrigin: "left center",
+      }, {
+        scaleX: "100%",
+        duration: 0.6,
+        ease: "power3.inOut"
+      }, '<')
+      .set(".tracker", { opacity: 1 })
+      .to(".tracker-curtain", {
+        scaleX: "0%",
+        transformOrigin: "right center",
+        duration: 0.6,
+        ease: "power3.inOut"
+      })
       // 3. Reveal CTA button border with blink
       .fromTo(".cta-button",
         { opacity: 0 },
@@ -125,18 +135,7 @@ export default function Home() {
           }
         },
         '<'
-      )
-      .to(".tracker", {
-        className: "tracker gradient-text absolute top-[65%] sm:top-[60%] text-7xl sm:text-8xl text-[#ece8e1] transition-all",
-        duration: 0.1,
-        ease: "power2.in"
-      }, '<-1')
-      .to(".tracker", {
-        backgroundPositionX: "130%",
-        backgroundPositionY: "100%",
-        ease: "power4.out",
-        duration: 4,
-      });
+      );
   }, []);
 
   useEffect(() => {
@@ -228,8 +227,9 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="flex h-screen bg-[#0f1923] relative hero-section">
-        <div className="flex h-full w-full relative hero-image-container">
+      {/* Hero Section - Refactored */}
+      <section className="flex flex-col h-screen bg-[#0f1923] relative hero-section">
+        <div className="h-full w-full relative hero-image-container">
           <video
             autoPlay
             muted
@@ -241,26 +241,14 @@ export default function Home() {
           </video>
 
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0f1923] z-2"></div>
-
         </div>
 
-        {/* CTA */}
-        <div
-          onClick={() => console.log("a")}
-          className="cta-button opacity-0 z-9 min-w-40 min-h-10 sm:min-w-50 sm:min-h-15 flex items-center justify-center cursor-pointer
-        text-white absolute top-[80%] sm:top-[75%] left-1/2 -translate-x-1/2 border-1 px-1 font-extrabold font-stretch-200%"
-        >
-          <div className="cta-button-bg opacity-0 flex justify-center items-center transition-colors bg-[#ff4655] hover:bg-[#ece8e1] hover:text-[#111111] text-[#ece8e1] w-full h-8 sm:h-13">
-            <span className="text-xl">Ready</span>
-          </div>
-        </div>
-
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-
-          <div className="relative flex flex-col items-center w-full max-w-xs sm:max-w-2xl">
+        {/* Hero Content */}
+        <div className="flex flex-col items-center justify-center absolute inset-0 z-10 p-4">
+          <div className="flex flex-col items-center w-full max-w-xs sm:max-w-2xl">
             <div className="valorant-logo opacity-0">
               <Image
-                src="/V_Logotype_White.png"
+                src="/V_Logotype_White_1.png"
                 alt="VALORANT Logo"
                 width={600}
                 height={120}
@@ -268,10 +256,21 @@ export default function Home() {
               />
             </div>
 
-            <div style={{ backgroundPositionX: "-150%" }} className="tracker gradient-text absolute top-[65%] sm:top-[60%] text-7xl sm:text-8xl text-[#ece8e1] transition-all opacity-0">
-              TRACKER
+            <div className="relative select-none text-transparent bg-clip-text bg-linear-130 from-75% to-[#ff4655] to-25% from-[#ece8e1] font-mark-pro-bold text-5xl sm:text-8xl transition-all">
+              <div className="tracker opacity-0">TRACKER</div>
+              <div className="tracker-curtain absolute opacity-0 left-0 -top-1 w-full transform h-full bg-[#ff4655]" />
             </div>
 
+            {/* CTA */}
+            <div
+              onClick={() => console.log("a")}
+              className="cta-button opacity-0 z-9 mt-16 min-w-40 min-h-10 sm:min-w-50 sm:min-h-15 flex items-center justify-center cursor-pointer
+            text-white border-1 px-1 font-extrabold font-stretch-200%"
+            >
+              <div className="cta-button-bg opacity-0 flex justify-center items-center transition-colors bg-[#ff4655] hover:bg-[#ece8e1] hover:text-[#111111] text-[#ece8e1] w-full h-8 sm:h-13">
+                <span className="text-xl font-mark-pro-bold">Ready</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
