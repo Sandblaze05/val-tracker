@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
+import gsap from "gsap";
+
 
 // News data
 const news = [
@@ -90,8 +93,8 @@ const GoToNews = () => (
   <div
     className="group cursor-pointer flex items-center flex-row "
   >
-    <p className="font-dinw05-bold uppercase text-red text-base mr-4 -tracking-wide font-bold" style={{fontFamily: 'DinW05Bold, Arial Black, sans-serif'}}>
-      GO TO NEWS PAGE
+    <p className="font-dinw05-bold uppercase text-red text-base mr-4 -tracking-wide font-bold" style={{ fontFamily: 'DinW05Bold, Arial Black, sans-serif' }}>
+      <span className="hidden md:inline">{"GO TO"}</span> {"NEWS"} <span className="hidden md:inline">{"PAGE"}</span>
     </p>
     <span className="group-hover:translate-x-2.5 ease-out duration-300 w-6 h-6">
       {/* Animated Arrow */}
@@ -116,10 +119,31 @@ const GoToNews = () => (
 const Slider = () => {
   const BREAKPOINT = 25;
   const TRANSITION_CLASSES = ["ease-out", "duration-500"];
-  
+
   const [disabled, setDisabled] = useState(false);
   const ref = useRef(null);
   const [sliderIndex, setSliderIndex] = useState(0);
+
+  const animations = useRef(new Map());
+
+  const handleMouseEnter = (id) => {
+    gsap.killTweensOf(`#filter-${id}`);
+    
+    gsap.fromTo(`#filter-${id}`, 
+      { scaleX: 0, opacity: 0.4 }, 
+      { scaleX: 1, transformOrigin: 'left', duration: 0.2, ease: 'linear' }
+    );
+  }
+
+  const handleMouseLeave = (id) => {
+    gsap.killTweensOf(`#filter-${id}`);
+    
+    gsap.to(`#filter-${id}`, { 
+      scaleX: 0, 
+      duration: 0.2, 
+      ease: "linear",
+    });
+  }
 
   useEffect(() => {
     function handleResize() {
@@ -129,10 +153,10 @@ const Slider = () => {
         setDisabled(false);
       }
     }
-    
+
     // Initial check
     handleResize();
-    
+
     window.addEventListener("resize", handleResize, false);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -161,13 +185,14 @@ const Slider = () => {
 
   const handleDragEnd = (e, info) => {
     ref.current?.classList.add(...TRANSITION_CLASSES);
-    
+
     if (Math.abs(info.offset.x) >= BREAKPOINT) {
       const direction = info.offset.x > 0 ? -1 : 1;
       const newIndex = Math.max(0, Math.min(news.length - 1, sliderIndex + direction));
       setSliderIndex(newIndex);
     }
   };
+
 
   return (
     <div className="relative">
@@ -187,16 +212,25 @@ const Slider = () => {
         onDragEnd={handleDragEnd}
       >
         {news.map((item) => (
-          <div 
-            key={item.id} 
+          <div
+            key={item.id}
             className="min-w-full lg:min-w-[33.33%] px-4"
-          >
+            >
             <div className="overflow-hidden">
               <div className="relative aspect-video overflow-hidden">
-                <img 
-                  src={item.image} 
+                <Image
+                  onMouseEnter={() => handleMouseEnter(item.id)}
+                  onMouseLeave={() => handleMouseLeave(item.id)}
+                  src={item.image}
                   alt={item.title}
+                  width={600}
+                  height={400}
                   className="w-full h-full object-cover"
+                />
+                <div 
+                  id={`filter-${item.id}`} 
+                  className="img-filter absolute inset-0 w-full h-full transform bg-[#ff4655] opacity-0 z-10 origin-left"
+                  style={{ scaleX: 0, pointerEvents: 'none' }}
                 />
               </div>
               <div className="p-4">
@@ -204,7 +238,7 @@ const Slider = () => {
                   <span className="text-xs mr-4">{item.date}</span>
                   <span className="text-xs text-red uppercase font-bold">{item.category}</span>
                 </div>
-                <h3 className="font-tungsten-bold text-2xl uppercase leading-tight font-black drop-shadow-lg" style={{fontFamily: 'TungstenBold, Impact, Arial Black, sans-serif'}}>
+                <h3 className="font-tungsten-bold text-2xl uppercase leading-tight font-black drop-shadow-lg" style={{ fontFamily: 'TungstenBold, Impact, Arial Black, sans-serif' }}>
                   {item.title}
                 </h3>
               </div>
@@ -212,15 +246,14 @@ const Slider = () => {
           </div>
         ))}
       </motion.div>
-      
+
       {/* Mobile pagination dots */}
       <div className="flex justify-center mt-4 lg:hidden">
         {news.map((_, i) => (
           <button
             key={i}
-            className={`w-2 h-2 mx-1 rounded-full ${
-              i === sliderIndex ? "bg-red" : "bg-gray-400"
-            }`}
+            className={`w-2 h-2 mx-1 rounded-full ${i === sliderIndex ? "bg-red" : "bg-gray-400"
+              }`}
             onClick={() => {
               ref.current?.classList.add(...TRANSITION_CLASSES);
               setSliderIndex(i);
@@ -257,25 +290,21 @@ const News = () => {
 
         <div className="flex justify-between items-start">
           <h2
-            className="z-20 overflow-hidden relative text-red font-tungsten-bold 
+            className="z-20 overflow-hidden relative text-[#ff4655] font-tungsten-bold 
             translate-y-[24%] lg:translate-y-[20%] 
             leading-[0.95] 
             text-[3.44rem] md:text-[6.25rem] lg:text-[7.5rem] 
             py-1.5 lg:py-0 font-black -mr-8 lg:-mr-16"
-            style={{fontFamily: 'TungstenBold, Impact, Arial Black, sans-serif'}}
+            style={{ fontFamily: 'TungstenBold, Impact, Arial Black, sans-serif' }}
           >
             <SectionHeadMotion>LATEST NEWS</SectionHeadMotion>
           </h2>
-          <div className="hidden lg:flex">
+          <div className="flex">
             <GoToNews />
           </div>
         </div>
 
         <Slider />
-
-        <div className="block lg:hidden">
-          <GoToNews />
-        </div>
       </div>
     </Section>
   );
