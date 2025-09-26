@@ -290,7 +290,7 @@ const News = () => {
 
         <div className="flex justify-between items-start">
           <h2
-            className="z-20 overflow-hidden relative text-red font-tungsten-bold 
+            className="z-20 overflow-hidden relative text-[#ff4655] font-tungsten-bold 
             translate-y-[24%] lg:translate-y-[20%] 
             leading-[0.95] 
             text-[3.44rem] md:text-[6.25rem] lg:text-[7.5rem] 

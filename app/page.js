@@ -7,6 +7,7 @@ import { TextPlugin } from "gsap/TextPlugin";
 import ScrollSmoother from "gsap/ScrollSmoother";
 import { useEffect, useRef, useState } from "react";
 import News from "@/components/News";
+import MatchCard from "@/components/MatchCard";
 
 gsap.registerPlugin(ScrollTrigger, TextPlugin, ScrollSmoother);
 
@@ -196,10 +197,9 @@ export default function Home() {
   }
 
   useEffect(() => {
-    // Apply shadow + "press in" animation
     gsap.fromTo(
       ".logo-part",
-      { filter: "drop-shadow(0px 0px 0px #ff4655)" },
+      { filter: "drop-shadow(0px 1px 1px #ff4655)" },
       {
         filter: "drop-shadow(0px 1px 4px #ff4655)",
         duration: 8,
@@ -210,11 +210,32 @@ export default function Home() {
     );
   }, []);
 
+  useEffect(() => {
+    gsap.set('.matches', { translateY: '100%' });
 
+    const matches = gsap.to('.matches', {
+      translateY: '0%',
+      duration: 0.65,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '.matches-section',
+        start: 'top 80%',
+        end: 'top 90%',
+        // markers: true,
+        scrub: 0.5
+      },
+    })
+
+    return () => {
+      if (matches.scrollTrigger) {
+        matches.scrollTrigger.kill();
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const videoElement = videoRef.current;
-    const logoElement = logoRef.current;
+    // const logoElement = logoRef.current;
 
     if (videoElement) {
       const handleVideoLoad = () => {
@@ -323,7 +344,8 @@ export default function Home() {
         </div>
       )}
       <div ref={smoothWrapper} className="smooth-wrapper">
-        <header className="fixed tracking-tighter w-full top-0 flex font-extrabold font-stretch-50% leading-0 items-center justify-between px-4 sm:px-8 py-4 mx-auto h-20 z-[9999] cursor-default">
+        {/* <div className="w-[2px] h-[50%] fixed top-0 left-10 bg-gradient-to-b from-transparent to-white mix-blend-difference opacity-50 z-[9999]"></div> */}
+        <header className="fixed tracking-tighter w-full top-0 opacity-0 flex font-extrabold font-stretch-50% leading-0 items-center justify-between px-4 sm:px-8 py-4 mx-auto h-20 z-[9999] cursor-default">
           <span className="flex-1 flex">
             <span className="p-1 text-transparent bg-clip-text bg-linear-[135deg] from-67% to-10% from-[#ff4655] to-[#ece8e1] text-3xl sm:text-5xl">VT</span>
           </span>
@@ -397,7 +419,22 @@ export default function Home() {
             {/* News Section */}
             <News />
 
-            <section className="flex relative flex-col min-h-screen items-start bg-[#0f1923] p-8"></section>
+            <section className="matches-section flex relative flex-row min-h-[70vh] h-[70vh] items-center bg-linear-[135deg] from-85% to-35% from-[#0f1923] to-[#ff4655]">
+              <div className="flex flex-col flex-1 h-full w-screen p-4">
+                <div className="overflow-y-hidden h-25">
+                  <div className="matches font-tungsten-bold tracking-wider text-6xl sm:text-8xl text-[#ff4655]">MATCHES</div>
+                </div>
+
+                <div className="p-4 mt-5">
+                  <MatchCard />
+                </div>
+
+              </div>
+              <div className="hidden sm:flex flex-1 h-full w-screen">
+
+              </div>
+            </section>
+
             <section className="flex relative flex-col min-h-screen items-start bg-[#ece8e1] p-8"></section>
 
             <footer className="bg-black py-8 border-t border-gray-800 relative overflow-hidden">
